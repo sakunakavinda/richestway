@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Richestway Supermarket — Drink Menu</title>
+  <meta name="description" content="Explore our premium beverage menu at Richestway Supermarket — Hot Coffee, Iced Coffee, Frappes & Tea." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0b08;
+      --surface: #161410;
+      --card: #1e1a14;
+      --card-hover: #252015;
+      --accent: #c9933f;
+      --accent-light: #e8b560;
+      --accent-dim: rgba(201,147,63,0.15);
+      --muted: #6b6055;
+      --text: #f0e8d8;
+      --text-dim: #a8997f;
+      --divider: rgba(201,147,63,0.18);
+      --hot: #e85d3f;
+      --ice: #3fa8e8;
+      --frappe: #9b6ed4;
+      --tea: #5bbc7a;
+      --radius: 16px;
+      --shadow: 0 8px 32px rgba(0,0,0,0.6);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO HEADER ── */
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 3rem 1.5rem 2rem;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,147,63,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-dim);
+      border: 1px solid var(--divider);
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      margin-bottom: 1rem;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 6vw, 2.8rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #f0e8d8 30%, var(--accent-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+    .hero-sub {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 0.4rem;
+    }
+    .hero-divider {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      margin: 1.2rem auto;
+    }
+
+    /* ── TABS ── */
+    .tabs-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,11,8,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--divider);
+      padding: 0 1rem;
+    }
+    .tabs {
+      display: flex;
+      overflow-x: auto;
+      gap: 4px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding: 0.6rem 0;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 100px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-dim);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+    .tab-btn .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      transition: background 0.25s;
+    }
+    .tab-btn[data-cat="hot"] .dot { background: var(--hot); }
+    .tab-btn[data-cat="ice"] .dot { background: var(--ice); }
+    .tab-btn[data-cat="frappe"] .dot { background: var(--frappe); }
+    .tab-btn[data-cat="tea"] .dot { background: var(--tea); }
+
+    .tab-btn:hover { color: var(--text); background: var(--accent-dim); }
+    .tab-btn.active {
+      color: var(--accent-light);
+      background: var(--accent-dim);
+      border-color: var(--divider);
+    }
+
+    /* ── MAIN ── */
+    main { padding: 1.5rem 1rem 4rem; max-width: 540px; margin: 0 auto; }
+
+    /* ── CATEGORY SECTION ── */
+    .category { display: none; animation: fadeUp 0.35s ease; }
+    .category.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .cat-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.2rem;
+    }
+    .cat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .cat-icon.hot    { background: rgba(232,93,63,0.15); }
+    .cat-icon.ice    { background: rgba(63,168,232,0.15); }
+    .cat-icon.frappe { background: rgba(155,110,212,0.15); }
+    .cat-icon.tea    { background: rgba(91,188,122,0.15); }
+
+    .cat-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .cat-count {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-top: 1px;
+    }
+
+    /* ── MENU ITEMS ── */
+    .menu-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .menu-item {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      cursor: default;
+    }
+    .menu-item:hover {
+      background: var(--card-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    .item-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .item-price {
+      flex-shrink: 0;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--accent-light);
+      letter-spacing: 0.01em;
+    }
+    .item-price span {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.65rem;
+      color: var(--muted);
+      font-weight: 400;
+      margin-right: 2px;
+      vertical-align: super;
+    }
+
+    /* ── ADD-ON BANNER ── */
+    .addon-banner {
+      margin-top: 1.2rem;
+      background: rgba(201,147,63,0.08);
+      border: 1px solid var(--divider);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+    .addon-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .addon-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .addon-pill {
+      background: rgba(201,147,63,0.12);
+      border: 1px solid rgba(201,147,63,0.25);
+      border-radius: 100px;
+      padding: 3px 10px;
+      font-size: 0.73rem;
+      color: var(--accent-light);
+    }
+    .addon-charge {
+      font-size: 0.73rem;
+      color: var(--text-dim);
+    }
+    .addon-charge strong {
+      color: var(--accent-light);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem 1.5rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      border-top: 1px solid var(--divider);
+    }
+    footer .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    /* ── SCROLL TO TOP ── */
+    #scrollTop {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #0d0b08;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+      box-shadow: 0 4px 16px rgba(201,147,63,0.4);
+      z-index: 200;
+    }
+    #scrollTop.visible { opacity: 1; pointer-events: auto; }
+    #scrollTop:hover { transform: scale(1.1); }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-badge">☕ Beverage Menu</div>
+  <h1 class="hero-title">Richestway<br/>Supermarket</h1>
+  <p class="hero-sub">Crafted with care · Served with warmth</p>
+  <div class="hero-divider"></div>
+</header>
+
+<!-- TABS -->
+<nav class="tabs-wrap" aria-label="Menu categories">
+  <div class="tabs" role="tablist">
+    <button class="tab-btn active" data-cat="hot"    role="tab" aria-selected="true"  id="tab-hot">    <span class="dot"></span> Hot Coffee</button>
+    <button class="tab-btn"        data-cat="ice"    role="tab" aria-selected="false" id="tab-ice">    <span class="dot"></span> Iced Coffee</button>
+    <button class="tab-btn"        data-cat="frappe" role="tab" aria-selected="false" id="tab-frappe"> <span class="dot"></span> Frappe</button>
+    <button class="tab-btn"        data-cat="tea"    role="tab" aria-selected="false" id="tab-tea">    <span class="dot"></span> Tea</button>
+  </div>
+</nav>
+
+<!-- CONTENT -->
+<main>
+
+  <!-- HOT COFFEE -->
+  <section class="category active" id="cat-hot" role="tabpanel" aria-labelledby="tab-hot">
+    <div class="cat-header">
+      <div class="cat-icon hot">☕</div>
+      <div>
+        <div class="cat-title">Hot Coffee</div>
+        <div class="cat-count">15 items</div>
+      </div>
+    </div>
+    <div class="menu-list" id="list-hot"></div>
+    <!-- Add-on Banner -->
+    <div class="addon-banner">
+      <div class="addon-title">🥛 Add-On Milk Options Available</div>
+      <div class="addon-pills">
+        <span class="addon-pill">Almond Milk</span>
+        <span class="addon-pill">Coconut Milk</span>
+        <span class="addon-pill">Oat Milk</span>
+      </div>
+      <div class="addon-charge">Extra charge: <strong>LKR 9.95</strong></div>
+    </div>
+  </section>
+
+  <!-- ICED COFFEE -->
+  <section class="category" id="cat-ice" role="tabpanel" aria-labelledby="tab-ice">
+    <div class="cat-header">
+      <div class="cat-icon ice">🧊</div>
+      <div>
+        <div class="cat-title">Iced Coffee</div>
+        <div class="cat-count">7 items</div>
+      </div>
+    </div>
+    <div class="menu-list" id="list-ice"></div>
+  </section>
+
+  <!-- FRAPPE -->
+  <section class="category" id="cat-frappe" role="tabpanel" aria-labelledby="tab-frappe">
+    <div class="cat-header">
+      <div class="cat-icon frappe">🥤</div>
+      <div>
+        <div class="cat-title">Frappe</div>
+        <div class="cat-count">11 items</div>
+      </div>
+    </div>
+    <div class="menu-list" id="list-frappe"></div>
+  </section>
+
+  <!-- TEA -->
+  <section class="category" id="cat-tea" role="tabpanel" aria-labelledby="tab-tea">
+    <div class="cat-header">
+      <div class="cat-icon tea">🍵</div>
+      <div>
+        <div class="cat-title">Tea</div>
+        <div class="cat-count">3 items</div>
+      </div>
+    </div>
+    <div class="menu-list" id="list-tea"></div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-logo">Richestway Supermarket</div>
+  <div>Prices are in LKR · Inclusive of all taxes</div>
+</footer>
+
+<button id="scrollTop" aria-label="Scroll to top">↑</button>
+
+<script>
+  // ── MENU DATA ──────────────────────────────────────────────────────────────
+  const menu = {
+    hot: [
+      { name: "Espresso Single",  price: "7.95"  },
+      { name: "Espresso Double",  price: "11.95" },
+      { name: "Cappuccino",       price: "12.95" },
+      { name: "Latte",            price: "12.95" },
+      { name: "Hot Chocolate",    price: "14.95" },
+      { name: "Moccacino",        price: "14.95" },
+      { name: "Americano",        price: "11.95" },
+      { name: "Mocha",            price: "14.95" },
+      { name: "Matcha Latte",     price: "17.95" },
+      { name: "Macchiato",        price: "12.00" },
+      { name: "Flat White",       price: "12.00" },
+      { name: "Spanish Latte",    price: "16.00" },
+      { name: "Pistachio Latte",  price: "16.00" },
+      { name: "Cortado",          price: "12.00" },
+      { name: "Affogato",         price: "12.00" },
+    ],
+    ice: [
+      { name: "Ice Americano",    price: "14.00" },
+      { name: "Ice Cappuccino",   price: "17.00" },
+      { name: "Ice Latte",        price: "17.00" },
+      { name: "Ice Spanish Latte",price: "18.00" },
+      { name: "Ice Espresso",     price: "10.00" },
+      { name: "Ice Matcha",       price: "22.00" },
+      { name: "Ice Mocha",        price: "20.00" },
+    ],
+    frappe: [
+      { name: "Vanilla Frappe",    price: "20.00" },
+      { name: "Chocolate Frappe",  price: "20.00" },
+      { name: "Mocha Frappe",      price: "20.00" },
+      { name: "Caramel Frappe",    price: "20.00" },
+      { name: "Matcha Frappe",     price: "20.00" },
+      { name: "Frappuccino",       price: "20.00" },
+      { name: "Avocado Frappe",    price: "20.00" },
+      { name: "Mango Frappe",      price: "20.00" },
+      { name: "Strawberry Frappe", price: "20.00" },
+      { name: "Oreo Frappe",       price: "20.00" },
+    ],
+    tea: [
+      { name: "Green Tea",    price: "4.95" },
+      { name: "Black Tea",    price: "4.95" },
+      { name: "Cardamom Tea", price: "4.95" },
+    ],
+  };
+
+  // ── RENDER ITEMS ──────────────────────────────────────────────────────────
+  function formatPrice(p) {
+    const [whole, dec] = parseFloat(p).toFixed(2).split('.');
+    return `<span>LKR </span>${whole}<small style="font-size:0.65em;color:var(--muted)">.${dec}</small>`;
+  }
+
+  Object.entries(menu).forEach(([cat, items]) => {
+    const list = document.getElementById('list-' + cat);
+    if (!list) return;
+    list.innerHTML = items.map(item => `
+      <div class="menu-item">
+        <div class="item-name">${item.name}</div>
+        <div class="item-price">${formatPrice(item.price)}</div>
+      </div>
+    `).join('');
+  });
+
+  // ── TABS ──────────────────────────────────────────────────────────────────
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const sections = document.querySelectorAll('.category');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.cat;
+
+      tabBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+      sections.forEach(s => s.classList.remove('active'));
+
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected','true');
+      document.getElementById('cat-' + cat).classList.add('active');
+
+      // Smooth scroll to top of content
+      document.querySelector('main').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // ── SCROLL TO TOP ─────────────────────────────────────────────────────────
+  const scrollBtn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => {
+    scrollBtn.classList.toggle('visible', window.scrollY > 300);
+  });
+  scrollBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>
