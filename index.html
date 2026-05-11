@@ -360,7 +360,7 @@
         <span class="addon-pill">Coconut Milk</span>
         <span class="addon-pill">Oat Milk</span>
       </div>
-      <div class="addon-charge">Extra charge: <strong>AED 9.95</strong></div>
+      <div class="addon-charge">Extra charge: <strong>LKR 9.95</strong></div>
     </div>
   </section>
 
@@ -404,7 +404,7 @@
 
 <footer>
   <div class="footer-logo">Richestway Supermarket</div>
-  <div>Prices are in AED · Inclusive of all taxes</div>
+  <div>Prices are in LKR · Inclusive of all taxes</div>
 </footer>
 
 <button id="scrollTop" aria-label="Scroll to top">↑</button>
@@ -460,7 +460,7 @@
   // ── RENDER ITEMS ──────────────────────────────────────────────────────────
   function formatPrice(p) {
     const [whole, dec] = parseFloat(p).toFixed(2).split('.');
-    return `<span>AED </span>${whole}<small style="font-size:0.65em;color:var(--muted)">.${dec}</small>`;
+    return `<span>LKR </span>${whole}<small style="font-size:0.65em;color:var(--muted)">.${dec}</small>`;
   }
 
   Object.entries(menu).forEach(([cat, items]) => {
